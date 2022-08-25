@@ -1,16 +1,16 @@
 
 package com.sales.model;
 
-public class Line {
+public class InvRows {
     private String item;
     private double price;
     private int count;
-    private Invoice invoice;
+    private InvHead invoice;
 
-    public Line() {
+    public InvRows() {
     }
 
-    public Line(String item, double price, int count, Invoice invoice) {
+    public InvRows(String item, double price, int count, InvHead invoice) {
         this.item = item;
         this.price = price;
         this.count = count;
@@ -50,7 +50,7 @@ public class Line {
         return "Line{" + "num=" + invoice.getNum() + ", item=" + item + ", price=" + price + ", count=" + count + '}';
     }
 
-    public Invoice getInvoice() {
+    public InvHead getInvoice() {
         return invoice;
     }
     

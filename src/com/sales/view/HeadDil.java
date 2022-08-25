@@ -1,8 +1,4 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
+
 package com.sales.view;
 
 import java.awt.GridLayout;
@@ -11,11 +7,8 @@ import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JTextField;
 
-/**
- *
- * @author DELL
- */
-public class InvoiceDialog extends JDialog {
+
+public class HeadDil extends JDialog {
     private JTextField custNameField;
     private JTextField invDateField;
     private JLabel custNameLbl;
@@ -23,7 +16,7 @@ public class InvoiceDialog extends JDialog {
     private JButton okBtn;
     private JButton cancelBtn;
 
-    public InvoiceDialog(InvoiceFrame frame) {
+    public HeadDil(InvoiceDesign frame) {
         custNameLbl = new JLabel("Customer Name:");
         custNameField = new JTextField(20);
         invDateLbl = new JLabel("Invoice Date:");

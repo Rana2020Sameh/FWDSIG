@@ -3,16 +3,16 @@ package com.sales.model;
 
 import java.util.ArrayList;
 
-public class Invoice {
+public class InvHead {
     private int num;
     private String date;
     private String customer;
-    private ArrayList<Line> lines;
+    private ArrayList<InvRows> lines;
     
-    public Invoice() {
+    public InvHead() {
     }
 
-    public Invoice(int num, String date, String customer) {
+    public InvHead(int num, String date, String customer) {
         this.num = num;
         this.date = date;
         this.customer = customer;
@@ -20,13 +20,13 @@ public class Invoice {
 
     public double getInvoiceTotal() {
         double total = 0.0;
-        for (Line line : getLines()) {
+        for (InvRows line : getLines()) {
             total += line.getLineTotal();
         }
         return total;
     }
     
-    public ArrayList<Line> getLines() {
+    public ArrayList<InvRows> getLines() {
         if (lines == null) {
             lines = new ArrayList<>();
         }

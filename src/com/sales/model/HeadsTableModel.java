@@ -4,11 +4,11 @@ package com.sales.model;
 import java.util.ArrayList;
 import javax.swing.table.AbstractTableModel;
 
-public class InvoicesTableModel extends AbstractTableModel {
-    private ArrayList<Invoice> invoices;
+public class HeadsTableModel extends AbstractTableModel {
+    private ArrayList<InvHead> invoices;
     private String[] columns = {"No.", "Date", "Customer", "Total"};
     
-    public InvoicesTableModel(ArrayList<Invoice> invoices) {
+    public HeadsTableModel(ArrayList<InvHead> invoices) {
         this.invoices = invoices;
     }
     
@@ -29,7 +29,7 @@ public class InvoicesTableModel extends AbstractTableModel {
     
     @Override
     public Object getValueAt(int rowIndex, int columnIndex) {
-        Invoice invoice = invoices.get(rowIndex);
+        InvHead invoice = invoices.get(rowIndex);
         
         switch (columnIndex) {
             case 0: return invoice.getNum();

@@ -1,12 +1,12 @@
 package com.sales.controller;
 
-import com.sales.model.Invoice;
-import com.sales.model.InvoicesTableModel;
-import com.sales.model.Line;
-import com.sales.model.LinesTableModel;
-import com.sales.view.InvoiceDialog;
-import com.sales.view.InvoiceFrame;
-import com.sales.view.LineDialog;
+import com.sales.model.InvHead;
+import com.sales.model.HeadsTableModel;
+import com.sales.model.InvRows;
+import com.sales.model.RowsTableModel;
+import com.sales.view.HeadDil;
+import com.sales.view.InvoiceDesign;
+import com.sales.view.RowsDil;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
@@ -15,19 +15,24 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import javax.swing.JFileChooser;
+import javax.swing.JOptionPane;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
-public class Controller implements ActionListener, ListSelectionListener {
+public class Listinar implements ActionListener, ListSelectionListener {
 
-    private InvoiceFrame frame;
-    private InvoiceDialog invoiceDialog;
-    private LineDialog lineDialog;
+    private InvoiceDesign frame;
+    private HeadDil invoiceDialog;
+    private RowsDil lineDialog;
 
-    public Controller(InvoiceFrame frame) {
+    public Listinar(InvoiceDesign frame) {
         this.frame = frame;
     }
 
@@ -74,12 +79,12 @@ public class Controller implements ActionListener, ListSelectionListener {
         int selectedIndex = frame.getInvoiceTable().getSelectedRow();
         if (selectedIndex != -1) {
             System.out.println("You have selected row: " + selectedIndex);
-            Invoice currentInvoice = frame.getInvoices().get(selectedIndex);
+            InvHead currentInvoice = frame.getInvoices().get(selectedIndex);
             frame.getInvoiceNumLabel().setText("" + currentInvoice.getNum());
             frame.getInvoiceDateLabel().setText(currentInvoice.getDate());
             frame.getCustomerNameLabel().setText(currentInvoice.getCustomer());
             frame.getInvoiceTotalLabel().setText("" + currentInvoice.getInvoiceTotal());
-            LinesTableModel linesTableModel = new LinesTableModel(currentInvoice.getLines());
+            RowsTableModel linesTableModel = new RowsTableModel(currentInvoice.getLines());
             frame.getLineTable().setModel(linesTableModel);
             linesTableModel.fireTableDataChanged();
         }
@@ -94,18 +99,21 @@ public class Controller implements ActionListener, ListSelectionListener {
                 Path headerPath = Paths.get(headerFile.getAbsolutePath());
                 List<String> headerLines = Files.readAllLines(headerPath);
                 System.out.println("Invoices have been read");
-                // 1,22-11-2020,Ali
-                // 2,13-10-2021,Saleh
-                // 3,09-01-2019,Ibrahim
-                ArrayList<Invoice> invoicesArray = new ArrayList<>();
+                
+                ArrayList<InvHead> invoicesArray = new ArrayList<>();
                 for (String headerLine : headerLines) {
-                    String[] headerParts = headerLine.split(",");
-                    int invoiceNum = Integer.parseInt(headerParts[0]);
-                    String invoiceDate = headerParts[1];
-                    String customerName = headerParts[2];
+                    try {
+                        String[] headerParts = headerLine.split(",");
+                        int invoiceNum = Integer.parseInt(headerParts[0]);
+                        String invoiceDate = headerParts[1];
+                        String customerName = headerParts[2];
 
-                    Invoice invoice = new Invoice(invoiceNum, invoiceDate, customerName);
-                    invoicesArray.add(invoice);
+                        InvHead invoice = new InvHead(invoiceNum, invoiceDate, customerName);
+                        invoicesArray.add(invoice);
+                    } catch (Exception ex) {
+                        ex.printStackTrace();
+                        JOptionPane.showMessageDialog(frame, "Error in line format", "Error", JOptionPane.ERROR_MESSAGE);
+                    }
                 }
                 System.out.println("Check point");
                 result = fc.showOpenDialog(frame);
@@ -115,45 +123,51 @@ public class Controller implements ActionListener, ListSelectionListener {
                     List<String> lineLines = Files.readAllLines(linePath);
                     System.out.println("Lines have been read");
                     for (String lineLine : lineLines) {
-                        String lineParts[] = lineLine.split(",");
-                        int invoiceNum = Integer.parseInt(lineParts[0]);
-                        String itemName = lineParts[1];
-                        double itemPrice = Double.parseDouble(lineParts[2]);
-                        int count = Integer.parseInt(lineParts[3]);
-                        Invoice inv = null;
-                        for (Invoice invoice : invoicesArray) {
-                            if (invoice.getNum() == invoiceNum) {
-                                inv = invoice;
-                                break;
+                        try {
+                            String lineParts[] = lineLine.split(",");
+                            int invoiceNum = Integer.parseInt(lineParts[0]);
+                            String itemName = lineParts[1];
+                            double itemPrice = Double.parseDouble(lineParts[2]);
+                            int count = Integer.parseInt(lineParts[3]);
+                            InvHead inv = null;
+                            for (InvHead invoice : invoicesArray) {
+                                if (invoice.getNum() == invoiceNum) {
+                                    inv = invoice;
+                                    break;
+                                }
                             }
-                        }
 
-                        Line line = new Line(itemName, itemPrice, count, inv);
-                        inv.getLines().add(line);
+                            InvRows line = new InvRows(itemName, itemPrice, count, inv);
+                            inv.getLines().add(line);
+                        } catch (Exception ex) {
+                            ex.printStackTrace();
+                            JOptionPane.showMessageDialog(frame, "Error in line format", "Error", JOptionPane.ERROR_MESSAGE);
+                        }
                     }
                     System.out.println("Check point");
                 }
                 frame.setInvoices(invoicesArray);
-                InvoicesTableModel invoicesTableModel = new InvoicesTableModel(invoicesArray);
+                HeadsTableModel invoicesTableModel = new HeadsTableModel(invoicesArray);
                 frame.setInvoicesTableModel(invoicesTableModel);
                 frame.getInvoiceTable().setModel(invoicesTableModel);
                 frame.getInvoicesTableModel().fireTableDataChanged();
             }
         } catch (IOException ex) {
             ex.printStackTrace();
+            JOptionPane.showMessageDialog(frame, "Cannot read file", "Error", JOptionPane.ERROR_MESSAGE);
         }
     }
 
     private void saveFile() {
-        ArrayList<Invoice> invoices = frame.getInvoices();
+        ArrayList<InvHead> invoices = frame.getInvoices();
         String headers = "";
         String lines = "";
-        for (Invoice invoice : invoices) {
+        for (InvHead invoice : invoices) {
             String invCSV = invoice.getAsCSV();
             headers += invCSV;
             headers += "\n";
 
-            for (Line line : invoice.getLines()) {
+            for (InvRows line : invoice.getLines()) {
                 String lineCSV = line.getAsCSV();
                 lines += lineCSV;
                 lines += "\n";
@@ -184,7 +198,7 @@ public class Controller implements ActionListener, ListSelectionListener {
     }
 
     private void createNewInvoice() {
-        invoiceDialog = new InvoiceDialog(frame);
+        invoiceDialog = new HeadDil(frame);
         invoiceDialog.setVisible(true);
     }
 
@@ -197,7 +211,7 @@ public class Controller implements ActionListener, ListSelectionListener {
     }
 
     private void createNewItem() {
-        lineDialog = new LineDialog(frame);
+        lineDialog = new RowsDil(frame);
         lineDialog.setVisible(true);
     }
 
@@ -205,7 +219,7 @@ public class Controller implements ActionListener, ListSelectionListener {
         int selectedRow = frame.getLineTable().getSelectedRow();
 
         if (selectedRow != -1) {
-            LinesTableModel linesTableModel = (LinesTableModel) frame.getLineTable().getModel();
+            RowsTableModel linesTableModel = (RowsTableModel) frame.getLineTable().getModel();
             linesTableModel.getLines().remove(selectedRow);
             linesTableModel.fireTableDataChanged();
             frame.getInvoicesTableModel().fireTableDataChanged();
@@ -222,13 +236,29 @@ public class Controller implements ActionListener, ListSelectionListener {
         String date = invoiceDialog.getInvDateField().getText();
         String customer = invoiceDialog.getCustNameField().getText();
         int num = frame.getNextInvoiceNum();
+        try {
+            String[] dateParts = date.split("-"); 
+            if (dateParts.length < 3) {
+                JOptionPane.showMessageDialog(frame, "Wrong date format", "Error", JOptionPane.ERROR_MESSAGE);
+            } else {
+                int day = Integer.parseInt(dateParts[0]);
+                int month = Integer.parseInt(dateParts[1]);
+                int year = Integer.parseInt(dateParts[2]);
+                if (day > 31 || month > 12) {
+                    JOptionPane.showMessageDialog(frame, "Wrong date format", "Error", JOptionPane.ERROR_MESSAGE);
+                } else {
+                    InvHead invoice = new InvHead(num, date, customer);
+                    frame.getInvoices().add(invoice);
+                    frame.getInvoicesTableModel().fireTableDataChanged();
+                    invoiceDialog.setVisible(false);
+                    invoiceDialog.dispose();
+                    invoiceDialog = null;
+                }
+            }
+        } catch (Exception ex) {
+            JOptionPane.showMessageDialog(frame, "Wrong date format", "Error", JOptionPane.ERROR_MESSAGE);
+        }
 
-        Invoice invoice = new Invoice(num, date, customer);
-        frame.getInvoices().add(invoice);
-        frame.getInvoicesTableModel().fireTableDataChanged();
-        invoiceDialog.setVisible(false);
-        invoiceDialog.dispose();
-        invoiceDialog = null;
     }
 
     private void createLineOK() {
@@ -239,10 +269,10 @@ public class Controller implements ActionListener, ListSelectionListener {
         double price = Double.parseDouble(priceStr);
         int selectedInvoice = frame.getInvoiceTable().getSelectedRow();
         if (selectedInvoice != -1) {
-            Invoice invoice = frame.getInvoices().get(selectedInvoice);
-            Line line = new Line(item, price, count, invoice);
+            InvHead invoice = frame.getInvoices().get(selectedInvoice);
+            InvRows line = new InvRows(item, price, count, invoice);
             invoice.getLines().add(line);
-            LinesTableModel linesTableModel = (LinesTableModel) frame.getLineTable().getModel();
+            RowsTableModel linesTableModel = (RowsTableModel) frame.getLineTable().getModel();
             //linesTableModel.getLines().add(line);
             linesTableModel.fireTableDataChanged();
             frame.getInvoicesTableModel().fireTableDataChanged();

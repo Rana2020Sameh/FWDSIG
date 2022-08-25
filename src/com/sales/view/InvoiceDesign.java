@@ -1,27 +1,20 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
+
 package com.sales.view;
 
-import com.sales.controller.Controller;
-import com.sales.model.Invoice;
-import com.sales.model.InvoicesTableModel;
+import com.sales.controller.Listinar;
+import com.sales.model.InvHead;
+import com.sales.model.HeadsTableModel;
+import java.awt.Color;
 import java.util.ArrayList;
 import javax.swing.JLabel;
 import javax.swing.JTable;
 
-/**
- *
- * @author DELL
- */
-public class InvoiceFrame extends javax.swing.JFrame {
 
-    /**
-     * Creates new form InvoiceFrame
-     */
-    public InvoiceFrame() {
+public class InvoiceDesign extends javax.swing.JFrame {
+
+    
+    public InvoiceDesign() {
+        this.getContentPane().setBackground(Color.white);
         initComponents();
     }
 
@@ -64,7 +57,11 @@ public class InvoiceFrame extends javax.swing.JFrame {
         saveFileMenuItem.addActionListener(controller);
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setBackground(new java.awt.Color(204, 204, 204));
 
+        jScrollPane1.setBackground(this.getContentPane().getBackground());
+
+        invoiceTable.setBackground(this.getContentPane().getBackground());
         invoiceTable.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
 
@@ -75,18 +72,44 @@ public class InvoiceFrame extends javax.swing.JFrame {
         ));
         jScrollPane1.setViewportView(invoiceTable);
 
+        createInvoiceButton.setBackground(this.getContentPane().getBackground());
         createInvoiceButton.setText("Create New Invoice");
 
+        deleteInvoiceButton.setBackground(this.getContentPane().getBackground());
         deleteInvoiceButton.setText("Delete Invoice");
+        deleteInvoiceButton.setOpaque(false);
 
+        jLabel1.setBackground(this.getContentPane().getBackground());
         jLabel1.setText("Inoice Number");
+        jLabel1.setOpaque(true);
 
+        jLabel2.setBackground(this.getContentPane().getBackground());
         jLabel2.setText("Invoice Date");
+        jLabel2.setOpaque(true);
 
+        jLabel3.setBackground(this.getContentPane().getBackground());
         jLabel3.setText("Customer Name");
+        jLabel3.setOpaque(true);
 
+        jLabel4.setBackground(this.getContentPane().getBackground());
         jLabel4.setText("Invoice Total");
+        jLabel4.setOpaque(true);
 
+        customerNameLabel.setBackground(this.getContentPane().getBackground());
+        customerNameLabel.setOpaque(true);
+
+        invoiceDateLabel.setBackground(this.getContentPane().getBackground());
+        invoiceDateLabel.setOpaque(true);
+
+        invoiceNumLabel.setBackground(this.getContentPane().getBackground());
+        invoiceNumLabel.setOpaque(true);
+
+        invoiceTotalLabel.setBackground(this.getContentPane().getBackground());
+        invoiceTotalLabel.setOpaque(true);
+
+        jScrollPane2.setBackground(this.getContentPane().getBackground());
+
+        lineTable.setBackground(this.getContentPane().getBackground());
         lineTable.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
 
@@ -97,8 +120,10 @@ public class InvoiceFrame extends javax.swing.JFrame {
         ));
         jScrollPane2.setViewportView(lineTable);
 
+        createLineButton.setBackground(this.getContentPane().getBackground());
         createLineButton.setText("Create New Item");
 
+        deleteLineButton.setBackground(this.getContentPane().getBackground());
         deleteLineButton.setText("Delete Item");
 
         jMenu1.setText("File");
@@ -211,20 +236,21 @@ public class InvoiceFrame extends javax.swing.JFrame {
                 }
             }
         } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(InvoiceFrame.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(InvoiceDesign.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(InvoiceFrame.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(InvoiceDesign.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(InvoiceFrame.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(InvoiceDesign.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(InvoiceFrame.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(InvoiceDesign.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
+        //</editor-fold>
         //</editor-fold>
 
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new InvoiceFrame().setVisible(true);
+                new InvoiceDesign().setVisible(true);
             }
         });
     }
@@ -251,27 +277,27 @@ public class InvoiceFrame extends javax.swing.JFrame {
     private javax.swing.JMenuItem loadFileMenuItem;
     private javax.swing.JMenuItem saveFileMenuItem;
     // End of variables declaration//GEN-END:variables
-    private ArrayList<Invoice> invoices;
-    private Controller controller = new Controller(this);
-    private InvoicesTableModel invoicesTableModel;
+    private ArrayList<InvHead> invoices;
+    private Listinar controller = new Listinar(this);
+    private HeadsTableModel invoicesTableModel;
 
-    public ArrayList<Invoice> getInvoices() {
+    public ArrayList<InvHead> getInvoices() {
         if (invoices == null) invoices = new ArrayList<>();
         return invoices;
     }
 
-    public void setInvoices(ArrayList<Invoice> invoices) {
+    public void setInvoices(ArrayList<InvHead> invoices) {
         this.invoices = invoices;
     }
 
-    public InvoicesTableModel getInvoicesTableModel() {
+    public HeadsTableModel getInvoicesTableModel() {
         if (invoicesTableModel == null) {
-            invoicesTableModel = new InvoicesTableModel(getInvoices());
+            invoicesTableModel = new HeadsTableModel(getInvoices());
         }
         return invoicesTableModel;
     }
 
-    public void setInvoicesTableModel(InvoicesTableModel invoicesTableModel) {
+    public void setInvoicesTableModel(HeadsTableModel invoicesTableModel) {
         this.invoicesTableModel = invoicesTableModel;
     }
 
@@ -299,14 +325,14 @@ public class InvoiceFrame extends javax.swing.JFrame {
         return lineTable;
     }
 
-    public Controller getController() {
+    public Listinar getController() {
         return controller;
     }
     
     public int getNextInvoiceNum() {
         int num = 0;
         
-        for (Invoice invoice : getInvoices()) {
+        for (InvHead invoice : getInvoices()) {
             if (invoice.getNum() > num) 
                 num = invoice.getNum();
         }
